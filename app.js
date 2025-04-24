@@ -37,7 +37,7 @@ if (CONFIG.allowedOrigins) {
 }
 app.disable( 'x-powered-by' );
 app.use(function(req, res, next) {
-  res.setHeader('X-Powered-By', 'Iframely');
+  res.setHeader('X-Powered-By', 'plane.so');
   next();
 });
 
@@ -170,7 +170,7 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 app.get('/', function(req, res) {
-  res.writeHead(302, { Location: 'http://iframely.com'});
+  res.writeHead(302, { Location: 'https://plane.so'});
   res.end();
 });
 
