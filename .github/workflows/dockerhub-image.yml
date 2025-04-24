@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: DockerHub Image CI
 
 on:
     push:
@@ -7,10 +7,6 @@ on:
 
     release:
         types: [published]
-
-permissions:
-    packages: write
-    contents: read
 
 jobs:
     build-main:
@@ -28,11 +24,20 @@ jobs:
                 username: ${{ secrets.DOCKERHUB_USERNAME }}
                 password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+            - name: Extract metadata (tags, labels)
+              id: meta
+              run: |
+                if [[ "${{ github.event_name }}" == "push" ]]; then
+                  echo "TAG_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+                elif [[ "${{ github.event_name }}" == "release" ]]; then
+                  echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+                fi
+
             - name: Build and Push Docker Image
               uses: docker/build-push-action@v5.1.0
               with:
                 platforms: linux/amd64,linux/arm64
                 push: true
-                tags: makeplane/iframely:latest
+                tags: makeplane/iframely:${{ env.TAG_NAME }}
               env:
                 DOCKER_BUILDKIT: 1
