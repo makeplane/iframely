@@ -11,30 +11,7 @@ export default {
 
     provides: 'sveriges',
 
-    mixins: [
-        // oEmbed returns "non-starting" player too - https://sverigesradio.se/avsnitt/1966906
-        "twitter-title",
-        "twitter-description",
-        "twitter-site",
-        "twitter-image",
-        "ld-newsarticle-logo",
-        "ld-author",
-        "ld-date",
-        "canonical",
-        "keywords",
-        "media-detector",
-        "theme-color",
-        "favicon",
-    ],
-
-    /* Not needed
-    getMeta: function(sverigies) {
-        return {
-            title: sveriges.title,
-            description: sveriges.description
-        }
-    },
-    */
+    mixins: ["*"],
 
     getLink: function(sveriges) {
 
@@ -93,14 +70,16 @@ export default {
     },
 
     tests: [{skipMixins: ['keywords']},
-        "https://sverigesradio.se/artikel/5848335",
+        "https://sverigesradio.se/artikel/5448335",
         "https://sverigesradio.se/artikel/6573606",
+        "https://sverigesradio.se/play/artikel/8936167",
         "https://sverigesradio.se/artikel/professorn-om-rymdbilden-det-ar-hisnande",
-        // "https://sverigesradio.se/avsnitt/1966906",
+        "https://www.sverigesradio.se/artikel/personal-doms-for-stold-av-smycken-varda-200-000-kronor-fran-aldreboende",
         "https://sverigesradio.se/embed/publication/6652202",
         "https://sverigesradio.se/embed/publication/8087725",
-        // Not embeddable: "https://sverigesradio.se/embed/episode/1966906",
+        "https://sverigesradio.se/avsnitt/2568806",
         "https://sverigesradio.se/avsnitt/nikola-tesla-elektricitetspionjaren-som-glomdes-bort"
         // Not embeddable: https://sverigesradio.se/artikel/4351444
+        // Not embeddable: "https://sverigesradio.se/embed/episode/1966906",
     ]
 };
