@@ -276,14 +276,6 @@
         "endpoint": "https://dotsub.com/services/oembed"
     },
     {
-        "name": "Animoto",
-        "templates": [
-            "animoto\\.com/play/.+"
-        ],
-        "endpoint": "https://animoto.com/oembeds/create.{format}?automated=true&options=start_hq&url={url}"
-
-    },
-    {
         "name": "Dipdive",
         "templates": [
             "\\w+\\.dipdive\\.com/media/.*"
@@ -657,12 +649,19 @@
         ],
         "endpoint": "https://codesandbox.io/oembed"
     }, {
-        "name": "NAVERTV",
+        "name": "Naver TV",
         "templates": [
             "tv.naver.com/.*"
         ],
         "endpoint": "https://tv.naver.com/oembed"
     }, {
+        "name": "Naver Audiobooks",
+        "templates": [
+            "audioclip.naver.com/audiobooks/.*"
+        ],
+        "endpoint": "https://audioclip.naver.com/oembed"
+    },
+    {
         "name": "Verse",
         "templates": [
             "verse.com/.*"
@@ -682,13 +681,6 @@
             "(?:www\\.)?canva.com/design/"
         ],
         "endpoint": "https://api.canva.com/_spi/presentation/_oembed"
-    },
-    {
-        "name": "Microsoft Streams",
-        "templates": [
-            "[a-zA-Z0-9-]+.microsoftstream.com/.*"
-        ],
-        "endpoint": "https://web.microsoftstream.com/oembed"
     },
     {
         "name": "Powr.io",
@@ -931,13 +923,6 @@
         "endpoint": "https://www.mightycause.com/1/oembed"
     },
     {
-        "name": "Kooapp",
-        "templates": [
-            "kooapp.com/koo/.*"
-        ],
-        "endpoint": "https://embed.kooapp.com/services/oembed"
-    },
-    {
         "name": "Observable",
         "templates": [
             "observablehq.com/@*/*",
@@ -1174,5 +1159,19 @@
             "wolframcloud.com/obj/*"
         ],
         "endpoint": "https://www.wolframcloud.com/oembed"
+    },
+    {
+        "name": "Polymer",
+        "templates": [
+            "app.polymersearch.com/*/*"
+        ],
+        "endpoint": "https://app.polymersearch.com/api/oembed"
+    },
+    {
+        "name": "Postd.io",
+        "templates": [
+            "postd.io/post/*"
+        ],
+        "endpoint": "https://postd.io/api/services/oembed"
     }
 ]

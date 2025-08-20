@@ -6,6 +6,12 @@ export default {
             return;
         }
 
+        // Some oembed rich publishers have WordPress /blogs. Allow rich media and ignore WP blogs.
+        var isWordpress = /wp\-embedded\-content/.test(oembed.html);
+        if (isWordpress) {
+            return;
+        }
+
         var rels = [CONFIG.R.oembed];
 
         if (whitelistRecord.isAllowed('oembed.rich', "reader")) {
@@ -65,7 +71,7 @@ export default {
                 widget.href = widget.href.replace(/^http:\/\//i, '//');
             }
 
-            if (iframe.scrolling === 'no') {
+            if (iframe.scrolling === 'no' && !whitelistRecord.isAllowed('oembed.rich', "resizable")) {
                 widget.scrolling = 'no';
             }
         
@@ -75,6 +81,7 @@ export default {
 
         if (widget.html && whitelistRecord.isAllowed('oembed.rich', "ssl")) {
             // For pure HTML, the only way to detect SSL is to take it from Whitelist.
+            widget.html = widget.html.replace(/http:\/\//g, 'https://');
             widget.rel.push(CONFIG.R.ssl);
         }
 
@@ -102,6 +109,10 @@ export default {
         if (iframe && iframe.src && iframe.allow) {
             widget.rel = widget.rel.concat(iframe.allow.replace(/autoplay;?\s?\*?/ig, '').split(/\s?\*?(?:;|,)\s?\*?/g));
         }
+
+        if (iframe && iframe.allowfullscreen === '' && widget.rel.indexOf('fullscreen') === -1) { // ex.: Supademo
+            widget.rel.push('fullscreen');
+        }        
 
         if (iframe && iframe.src && iframe.onmousewheel === '') {
             widget.rel.push('nowheel');
