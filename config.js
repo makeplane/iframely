@@ -20,6 +20,8 @@
         use_http2: true,
         DEBUG: false,
 
+        WHITELIST_LOAD_ON_INIT: true,   // Whitelist is always loaded by lib init. Otherwise use `initializeWhitelistLoader();`.
+        WHITELIST_DIR: './whitelist',   // Set `null` to disable loading from file.
         WHITELIST_URL: 'https://iframely.com/qa/domains.json',
         WHITELIST_URL_RELOAD_PERIOD: 60 * 60 * 1000,  // will reload WL every hour, if no local files are found in /whitelist folder
 
@@ -347,7 +349,7 @@
             "iframely"
         ],
 
-        KNOWN_VIDEO_SOURCES: /(youtube|youtu|youtube\-nocookie|vimeo|dailymotion|theplatform|jwplatform|jwplayer|cnevids|newsinc|podbean|simplecast|libsyn|wistia|podiant|art19|kaltura|mtvnservices|brightcove|bcove|soundcloud|giphy|flowplayer|vidible|bandzoogle|podigee|smugmug|facebook|vid|ultimedia|mixcloud|vidyard|youplay|streamable|captivate|mdstrm|mediadelivery|hearstapps|rudo|acast|screen9|spotlightr|loom)\.\w+\//i,
+        KNOWN_VIDEO_SOURCES: /(youtube|youtu|youtube\-nocookie|vimeo|dailymotion|theplatform|jwplatform|jwplayer|cnevids|newsinc|podbean|simplecast|libsyn|wistia|art19|kaltura|mtvnservices|brightcove|bcove|soundcloud|giphy|flowplayer|vidible|bandzoogle|podigee|smugmug|facebook|vid|ultimedia|mixcloud|vidyard|youplay|streamable|captivate|mdstrm|mediadelivery|hearstapps|rudo|acast|screen9|spotlightr|loom)\.\w+\//i,
 
         OEMBED_RELS_PRIORITY: ["app", "player", "survey", "image", "reader"],
         OEMBED_RELS_MEDIA_PRIORITY: ["player", "survey", "image", "reader", "app"],
@@ -365,7 +367,13 @@
             'ENET',
             'HPE_INVALID_',
             'ERR_SSL_'
-        ]
+        ],
+
+        GET_VARS_METHODS: {
+            'getSignals': 'signals',
+            'getPolicy': 'policy',
+            'getSources': 'sources'
+        }
     };
 
     // Providers config loader.

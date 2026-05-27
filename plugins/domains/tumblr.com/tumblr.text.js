@@ -1,4 +1,4 @@
-import cheerio from 'cheerio';
+import * as cheerio from 'cheerio';
 
 export default {
 
@@ -18,8 +18,7 @@ export default {
             return;
         }
 
-        var $post = cheerio('<div>').html(tumblr_post.body);
-        var $image = $post.find('img').first(); // Could be more than 1 image, true. But the response time will be unacceptable as post-processing will check all image sizes.
+        var $image = cheerio.load(tumblr_post.body)('img').first(); // Could be more than 1 image, true. But the response time will be unacceptable as post-processing will check all image sizes.
 
         if ($image ) {
             return {
@@ -32,6 +31,7 @@ export default {
     },
 
     tests: [{skipMethods: ["getData"]},
-        "http://blog.slides.com/post/84828911898/slides-turns-one-year-old"
+        "https://blog.slides.com/post/84828911898/slides-turns-one-year-old",
+        "https://butts-bouncing-on-the-beltway.tumblr.com/post/804116029629399040"
     ]
 };

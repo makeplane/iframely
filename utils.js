@@ -3,7 +3,6 @@
     import * as ejs from 'ejs';
     import * as fs from 'fs';
     import * as crypto from 'crypto';
-    import * as _ from 'underscore';
     import * as urlLib from 'url';
 
     import log from './logging.js';
@@ -122,7 +121,7 @@
 
         var newQuery = {};
 
-        var keys = _.keys(query);
+        var keys = Object.keys(query);
         keys.sort();
         keys.forEach(function(key) {
             newQuery[key] = query[key];
@@ -335,3 +334,63 @@
             next();
         });
     };
+
+    export function difference(a, b) {
+        return a.filter(item => !b.includes(item));
+    }
+
+    export function intersection(a, b) {
+        return a.filter((x) => {
+            return b.some((y) => {
+                return Object.is(x, y); // Use Object.is for accurate NaN comparison.
+            });
+        });
+    }
+
+    export function unique(a) {
+        return [...new Set(a)];
+    }
+
+    export function union(...arrays) {
+        const merged = [];
+        for (const arr of arrays) {
+            if (Array.isArray(arr)) merged.push(...arr);
+        }
+        return [...new Set(merged)];
+    }
+
+    const HTML_ESCAPE_MAP = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+    };
+    
+    function escapeHTML(value) {
+        if (typeof value !== "string") {
+            return value;
+        }
+        return value.replace(/[&<>"']/g, char => HTML_ESCAPE_MAP[char]);
+    }
+    
+    export function normalizeQueryOptionValue(value) {
+        if (value === 'true') {
+            return true;
+        }
+        if (value === 'false') {
+            return false;
+        }
+        if (/^\d+$/.test(value)) {
+            return parseInt(value);
+        }
+        if (/^(\d+)?\.\d+$/.test(value)) {
+            return parseFloat(value);
+        }
+        if (typeof value === 'string') {
+            // Escape string value in case it will be used in html.
+            return escapeHTML(value);
+        }
+        // Return nothing if unknown type or array.
+        return;
+    }

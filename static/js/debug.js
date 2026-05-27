@@ -54,7 +54,7 @@ function findDebugInfo(link, data) {
 
     var result;
 
-    _.find(data.allData, function(dataItem) {
+    data.allData.find(function(dataItem) {
 
         if (dataItem.method.name.indexOf('getLink') === -1) {
             return;
@@ -75,7 +75,7 @@ function findDebugInfo(link, data) {
         });
 
         if (goodLinks.length) {
-            result = _.extend({}, dataItem);
+            result = Object.assign({}, dataItem);
             result.data = goodLinks[0];
             return true;
         }
@@ -241,7 +241,7 @@ function showEmbeds($embeds, data, filterByRel) {
             .addClass("table table-bordered")
             .append('<thead><tr>' + (DEBUG ? '<th>plugin</th><th>requirements</th>' : '') + '<th>key</th><th>value</th></tr></thead>');
 
-        var metaKeys = _.keys(data.meta);
+        var metaKeys = Object.keys(data.meta);
         metaKeys.sort();
         metaKeys.forEach(function(key) {
             if (key == "_sources") {
@@ -252,6 +252,19 @@ function showEmbeds($embeds, data, filterByRel) {
 
             $meta.append('<tr>' + (DEBUG ? ('<td>' + pluginId + '</td><td></td>') : '') + '<td><strong>' + key + '</strong></td><td>' + linkify(data.meta[key]) + '</td></tr>')
         });
+        // Render "vars".
+        if (data.vars) {
+            metaKeys = Object.keys(data.vars);
+            metaKeys.forEach(function(key) {
+                if (key == "_sources") {
+                    return;
+                }
+                var pluginId = data.vars._sources && data.vars._sources[key] || '';
+                usedPlugins[pluginId] = true;
+
+                $meta.append('<tr>' + (DEBUG ? ('<td>' + pluginId + '</td><td></td>') : '') + '<td>vars: <strong>' + key + '</strong></td><td><pre>' + JSON.stringify(data.vars[key], null, 4) + '</pre></td></tr>')
+            });
+        }
         if (DEBUG && data.vary && data.vary.join) {
             $meta.append('<tr><td></td><td></td><td><strong>vary</strong></td><td>' + data.vary.join('<br>') + '</td></tr>')
         }
@@ -259,7 +272,7 @@ function showEmbeds($embeds, data, filterByRel) {
         $embeds.prepend($meta);
         $embeds.prepend('<h4>Unified meta</h4>');
 
-        var pluginsList = _.keys(usedPlugins);
+        var pluginsList = Object.keys(usedPlugins);
         var $textarea = $('<textarea>')
             .hide()
             .attr('rows', pluginsList.length + 2)
@@ -293,6 +306,16 @@ function findAllRels(data) {
     return _.intersection(result, REL_GROUPS);
 }
 
+function getTimingData(data) {
+    var result = {};
+    data.allData.forEach(function(pluginResult) {
+        if (pluginResult.time) {
+            result[pluginResult.method.pluginId] = pluginResult.time
+        }
+    });
+    return {timings: result};
+}
+
 function processUrl() {
     var uri = $.trim($('.s-uri').focus().val());
 
@@ -305,6 +328,7 @@ function processUrl() {
     var $resultTabs = $('.s-result-div').hide();
 
     var $result = $('.s-debug-result');
+    var $timingResult = $('.s-timing-result');
     var $context = $('.s-debug-context');
     var $response = $('.s-json');
     var $embeds = $('.s-embeds');
@@ -326,6 +350,7 @@ function processUrl() {
     var query = {
         debug: true,
         group: false,
+        dataMode: $('[name="dataMode"]').is(":checked"),
         mixAllWithDomainPlugin: $('[name="mixAllWithDomainPlugin"]').is(":checked"),
         refresh: $('[name="refresh"]').is(":checked")
     };
@@ -336,7 +361,6 @@ function processUrl() {
 
         if (error) {
             $status.attr('class', 'alert alert-error').show().text(jqXHR.status + ' - ' + error + ' - ' +jqXHR.responseText);
-            $result.renderObject(data);
             return;
         }
 
@@ -370,6 +394,9 @@ function processUrl() {
         // Render all debug data.
         $result.renderObject(data);
 
+        // Render timing data.
+        $timingResult.renderObject(getTimingData(data));
+
         var clearData = $.extend(true, {}, data);
         delete clearData.allData;
         delete clearData.time;
@@ -385,7 +412,7 @@ function processUrl() {
         // Render context.
         var contexts = data.allData && data.allData
             .filter(function(d) {
-                return d.method.name === 'getData';
+                return d.method.name === 'getData' || d.method.name === 'getVars';
             })
             .map(function(d) {
                 return d.data;

@@ -223,8 +223,8 @@ export default {
             // dnt: true,                
             cache_ttl: 100 * 365 * 24 * 3600 // 100 Years.
         },
-        readability: {
-            enabled: false
+        app: {
+            // allow_readability: true
             // allowPTagDescription: true  // to enable description fallback to first paragraph
         },
         images: {
@@ -237,7 +237,9 @@ export default {
         },
         google: {
             // https://developers.google.com/maps/documentation/embed/guide#api_key
-            maps_key: "INSERT YOUR VALUE"
+            maps_key: "INSERT YOUR VALUE",
+            // If your servers are in EU, google maps will redirect to /consent/ page and the plugins won't work. The option below ignores the redirect.
+            // follow_http_redirect: true 
         }, 
 
         /*

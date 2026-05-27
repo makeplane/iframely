@@ -8,7 +8,6 @@ export default {
         "oembed-title",
         "oembed-site",
         "oembed-description",
-        // "og-video",
         'domain-icon'
     ],
 

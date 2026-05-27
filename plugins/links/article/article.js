@@ -1,9 +1,25 @@
+import * as cheerio from 'cheerio';
+
 export default {
 
-    getData: function(readability, meta, __is_general_article, utils) {
+    provides: 'articlebody', // if not yet provided from LD articlebody
 
+    getData: function(__readabilityEnabled, readability, meta, utils) {
+
+        const articleHtml = utils.encodeText(meta.charset, readability.getHTML());
+        const $p = cheerio.load(articleHtml)('p');
+        const articleText = $p.text();
+
+        if (articleText) {
+            return {
+                articlebody: __readabilityEnabled === 'html' ? articleHtml : articleText.replace(/\.([^\.\d\s\n\r\'\"\”\)\]])/g, '. $1')
+            }
+        }
+    },
+
+    getVars: function(articlebody) {
         return {
-            safe_html: utils.encodeText(meta.charset, readability.getHTML())
+            articlebody: articlebody
         };
     }
 };

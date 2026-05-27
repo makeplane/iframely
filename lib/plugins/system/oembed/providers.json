@@ -2,22 +2,23 @@
     {
         "name": "Facebook Post no query string",
         "templates": [
-          "(?:www|m|business)\\.(facebook\\.com/[a-zA-Z0-9\\.\\-]+/(?:posts|activity)/\\d{10,})",
-          "(?:www|m|business)\\.(facebook\\.com/[a-zA-Z0-9\\.\\-]+/(?:posts|activity)/pfbid([a-zA-Z0-9\\.\\-]+))",
+          "(?:www|m|business)\\.(facebook\\.com/[^/]+/(?:posts|activity)/\\d{10,})",
+          "(?:www|m|business)\\.(facebook\\.com/posts/[^/]+/\\d{10,})",
+          "(?:www|m|business)\\.(facebook\\.com/[^/]+/(?:posts|activity)/pfbid([a-zA-Z0-9\\.\\-]+))",
           "(?:www|m|business)\\.(facebook\\.com/notes/[^/]+/[^/]+/\\d{10,})",
           "(?:www|m|business)\\.(facebook\\.com/\\d+_\\d+)"
         ],
         "url": "https://www.{1}",
-        "endpoint": "https://graph.facebook.com/v18.0/oembed_post"
+        "endpoint": "https://graph.facebook.com/v24.0/oembed_post"
     },
     {
         "name": "Facebook Video no query string",
         "templates": [
-            "(?:www|business)\\.(facebook\\.com/[a-zA-Z0-9.]+/videos/\\d+)",
+            "(?:www|business)\\.(facebook\\.com/[^/]+/videos/\\d+)",
             "(?:www|m|business)\\.(facebook\\.com/watch/?\\?v=\\d+)"
         ],
         "url": "https://www.{1}",
-        "endpoint": "https://graph.facebook.com/v18.0/oembed_video"
+        "endpoint": "https://graph.facebook.com/v24.0/oembed_video"
     },
     {
         "name": "Facebook Video",
@@ -31,7 +32,7 @@
           "(?:www|m|business)\\.facebook\\.com/watch/?\\?(?:.+&)?v=\\d+",
           "(?:www|m|business)\\.facebook\\.com/reel/\\d+"          
         ],
-        "endpoint": "https://graph.facebook.com/v18.0/oembed_video"
+        "endpoint": "https://graph.facebook.com/v24.0/oembed_video"
     },
     {
         "name": "Facebook Post",
@@ -39,34 +40,33 @@
           "(?:www|m|business)\\.facebook\\.com/(permalink|story)\\.php\\?[^/]+(\\d{10,})",
           "(?:www|m|business)\\.facebook\\.com/photo\\.php\\?[^/]+(\\d{10,})",
           "(?:www|m|business)\\.facebook\\.com/photo/?\\?",
-          "(?:www|m|business)\\.facebook\\.com/([a-zA-Z0-9\\.\\-]+)/(?:photos/)?[^\\/]+/(\\d{10,})",
+          "(?:www|m|business)\\.facebook\\.com/[^/]+/(?:photos/)?[^\\/]+/(\\d{10,})",
           "(?:www|m|business)\\.facebook\\.com/media/set/\\?set=[^/]+(\\d{10,})"
         ],
-        "endpoint": "https://graph.facebook.com/v18.0/oembed_post"
-    },
-    {
-        "name": "Facebook Page",
-        "templates": [
-            "(?:www|m)\\.facebook\\.com/(?:pg|pages)/",
-            "(?:www|m)\\.facebook\\.com/[^/]+/?(?:about|photos|videos|events|timeline|photos_stream)?/?(?:\\?[^/\\?]+)?$"
-        ],
-        "endpoint": "https://graph.facebook.com/v18.0/oembed_page"
+        "endpoint": "https://graph.facebook.com/v24.0/oembed_post"
     },
     {
         "name": "Instagram",
         "templates": [
-            "(?:www\\.)?(instagram\\.com/(?:p|tv|reel)/([a-zA-Z0-9_-]+))",
+            "(?:www\\.)?(instagram\\.com/(?:p|tv)/([a-zA-Z0-9_-]+))",
             "(instagr\\.am/p/([a-zA-Z0-9_-]+))"
         ],
-        "endpoint": "https://graph.facebook.com/v18.0/instagram_oembed?format={format}&url=https://www.{1}/"
+        "endpoint": "https://graph.facebook.com/v24.0/instagram_oembed?format={format}&url=https://www.{1}/"
     },
+    {
+        "name": "Instagram Reels",
+        "templates": [
+            "(?:www\\.)?instagram\\.com/reels?/([a-zA-Z0-9_-]+)"
+        ],
+        "endpoint": "https://graph.facebook.com/v24.0/instagram_oembed?format={format}&url=https://www.instagram.com/reel/{1}/"
+    },    
     {
         "name": "Instagram user page",
         "templates": [
             "(?:www\\.)?(instagram\\.com/)[a-zA-Z0-9_\\-\\.]+/((?:p|tv|reel)/[a-zA-Z0-9_-]+)",
             "(instagr\\.am/)[a-zA-Z0-9_\\-\\.]+/(p/[a-zA-Z0-9_-]+)"
         ],
-        "endpoint": "https://graph.facebook.com/v18.0/instagram_oembed?format={format}&url=https://www.{1}{2}"
+        "endpoint": "https://graph.facebook.com/v24.0/instagram_oembed?format={format}&url=https://www.{1}{2}"
     },
     {
         "name": "Instagram profile",
@@ -74,7 +74,7 @@
             "(?:www\\.)?(instagram\\.com/)([a-zA-Z0-9_\\-\\.]+)/?(?:\\?.+)?$"
         ],
         "url": "https://www.{1}{2}/",
-        "endpoint": "https://graph.facebook.com/v18.0/instagram_oembed?format={format}&&url={url}"
+        "endpoint": "https://graph.facebook.com/v24.0/instagram_oembed?format={format}&&url={url}"
     },
     {
         "name": "Dailymotion",
@@ -116,13 +116,6 @@
         ],
         "url": "https://www.flickr.com/{1}",
         "endpoint": "https://www.flickr.com/services/oembed/?format={format}&url={url}"
-    },
-    {
-        "name": "Brightcove",
-        "templates": [
-            "players.brightcove.net/.*"
-        ],
-        "endpoint": "https://oembed.brightcove.com/"
     },
     {
         "name": "Hulu",
@@ -372,7 +365,8 @@
     {
         "name": "Behance",
         "templates": [
-            "www\\.behance\\.net/gallery/.*"
+            "www\\.behance\\.net/gallery/.*",
+            "www\\.behance\\.net/[0-9a-zA-Z.\\-_]+/services/\\d+/"
         ],
         "endpoint": "https://www.behance.net/services/oembed"
     },
@@ -533,13 +527,6 @@
         ],
         "endpoint": "https://www.kickstarter.com/services/oembed"
     }, {
-        "name": "ProductHunt",
-        "templates": [
-            "(?:www\\.)producthunt\\.com/(?:posts|products)/([^/#]+)"
-        ],
-        "endpoint": "https://api.producthunt.com/widgets/oembed",
-        "url": "https://producthunt.com/posts/{1}"
-    }, {
         "name": "ProductHunt Comments",
         "templates": [
             "(?:www\\.)producthunt\\.com/(?:posts|products)/[^#]+#comments?\\-(\\d+)"
@@ -654,12 +641,6 @@
             "tv.naver.com/.*"
         ],
         "endpoint": "https://tv.naver.com/oembed"
-    }, {
-        "name": "Naver Audiobooks",
-        "templates": [
-            "audioclip.naver.com/audiobooks/.*"
-        ],
-        "endpoint": "https://audioclip.naver.com/oembed"
     },
     {
         "name": "Verse",
@@ -712,13 +693,6 @@
         "endpoint": "https://www.kidoju.com/api/oembed"
     },
     {
-        "name": "VeeR VR",
-        "templates": [
-            "veer.tv/videos/.*"
-        ],
-        "endpoint": "https://api.veer.tv/oembed"
-    },
-    {
         "name": "Screen9",
         "templates": [
             "\\w+\\.screen9\\.tv/.*",
@@ -739,20 +713,6 @@
             "namchey.com/.*"
         ],
         "endpoint": "https://namchey.com/api/oembed"
-    },
-    {
-        "name": "FITE",
-        "templates": [
-            "(?:www\\.)?fite.tv/watch/.*"
-        ],
-        "endpoint": "https://www.fite.tv/oembed"
-    },
-    {
-        "name": "GloriaTV",
-        "templates": [
-            "gloria.tv/.*"
-        ],
-        "endpoint": "https://gloria.tv/oembed/"
     },
     {
         "name": "Fontself",
@@ -826,6 +786,14 @@
         "endpoint": "https://grid.is/api/oembed"
     },
     {
+        "name": "Calculator Studio",
+        "templates": [
+            "app.calculatorstudio.co/@(.+)"
+        ],
+        "url": "https://grid.is/@{1}",
+        "endpoint": "https://app.calculatorstudio.co/api/oembed"
+    },    
+    {
         "name": "Anchor FM",
         "templates": [
             "anchor.fm/[a-zA-Z0-9\\-]+/episodes/[^\\/]+\\-([a-zA-Z0-9]+)(?:$|\\?)"
@@ -874,25 +842,22 @@
             "iorad.com/player/*"
         ],
         "endpoint": "https://www.iorad.com/api/oembed"
-    }, {
-        "name": "Dropbox Capture",
-        "templates": [
-            "capture.dropbox.com/*"
-        ],
-        "endpoint": "https://www.dropbox.com/capture/oembed?format={format}&url={url}"
-    }, {
+    }, 
+    {
         "name": "Miro",
         "templates": [
             "miro.com/app/board/*"
         ],
         "endpoint": "https://miro.com/api/v1/oembed?format={format}&url={url}"
-    }, {
+    }, 
+    {
         "name": "Paperform",
         "templates": [
             ".*\\.paperform\\.co/.*"
         ],
         "endpoint": "https://paperform.co/services/oembed?url={url}"
-    }, {
+    }, 
+    {
         "name": "Airtable",
         "templates": [
             "airtable\\.com/*/*"
@@ -961,25 +926,11 @@
         "endpoint": "https://app.gong.io/oembed"
     },
     {
-        "name": "HASH",
-        "templates": [
-            "core.hash.ai/@*"
-        ],
-        "endpoint": "https://api.hash.ai/oembed"
-    },
-    {
         "name": "Idomoo",
         "templates": [
             ".*\\.idomoo\\.com/.*"
         ],
         "endpoint": "https://oembed.idomoo.com/oembed"
-    },
-    {
-        "name": "Indaco",
-        "templates": [
-            "player.indacolive.com/player/.*"
-        ],
-        "endpoint": "https://player.indacolive.com/services/oembed"
     },
     {
         "name": "Portfolium",
@@ -1025,7 +976,7 @@
         "endpoint": "https://app.wizer.me/api/oembed.{format}"
     },
     {
-        "name": "Casual.app",
+        "name": "Causal.app",
         "templates": [
             "my.causal.app/models/*"
         ],
@@ -1132,12 +1083,13 @@
         "endpoint": "https://adilo.bigcommand.com/web/oembed"
     },
     {
-        "name": "Quizizz",
+        "name": "Wayground",
         "templates": [
-            "quizizz.com/admin/quiz/([a-z0-9]+)/"
+            "(?:quizizz|wayground)\\.com/admin/(quiz)/([a-z0-9]+)/",
+            "(?:quizizz|wayground)\\.com/embed/(quiz|presentation)/([a-z0-9]+)"
         ],
-        "endpoint": "https://quizizz.com/oembed",
-        "url": "https://quizizz.com/embed/quiz/{1}"
+        "url": "https://wayground.com/embed/{1}/{2}",
+        "endpoint": "https://wayground.com/oembed"
     },
     {
         "name": "run.ply.io",
@@ -1173,5 +1125,19 @@
             "postd.io/post/*"
         ],
         "endpoint": "https://postd.io/api/services/oembed"
+    },
+    {
+        "name": "Imajize",
+        "templates": [
+            "embed.imajize.com/*"
+        ],
+        "endpoint": "https://app.imajize.com/api/oembed.json"
+    },
+    {
+        "name": "Apple Podcasts",
+        "templates": [
+            "podcasts.apple.com/(?:\\w+/)?podcast/*"
+        ],
+        "endpoint": "https://podcasts.apple.com/api/oembed"
     }
 ]

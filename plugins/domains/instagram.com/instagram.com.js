@@ -1,7 +1,3 @@
-import cheerio from 'cheerio';
-
-import { decodeHTML5 } from 'entities';
-
 export default {
 
     /**
@@ -12,7 +8,7 @@ export default {
      */     
 
     re: [
-        /^https?:\/\/www\.instagram\.com\/(?:[a-zA-Z0-9_\-\.]+\/)?(?:p|tv|reel)\/([a-zA-Z0-9_-]+)\/?/i,
+        /^https?:\/\/www\.instagram\.com\/(?:[a-zA-Z0-9_\-\.]+\/)?(?:p|tv|reels?)\/([a-zA-Z0-9_-]+)\/?/i,
         /^https?:\/\/instagr\.am\/(?:[a-zA-Z0-9_\-\.]+\/)?p\/([a-zA-Z0-9_-]+)/i,
         /^https?:\/\/www\.instagram\.com\/(?:[a-zA-Z0-9_\-\.]+\/)?(?:p|tv)\/([a-zA-Z0-9_-]+)$/i
     ],
@@ -29,37 +25,10 @@ export default {
     provides: ['ipOG', '__allowInstagramMeta'],
 
     getMeta: function (oembed, urlMatch, ipOG) {
-
-        var title = ipOG.title;
-        var description = ipOG.description || oembed.title;
-
-        if (!description || !title || /login/i.test(title)) {
-            var $container = cheerio('<div>');
-            try {
-                $container.html(decodeHTML5(oembed.html));
-            } catch (ex) {}
-
-            if (!title || /login/i.test(title)) {
-                var $a = $container.find(`p a[href*="${oembed.author_name}"], p a[href*="${urlMatch[1]}"]`);
-
-                if ($a.length == 1) {
-                    title = $a.text();
-                    title += /@/.test(title) ? '' : (oembed.author_name ? ` (@${oembed.author_name})` : '');
-                } else if (oembed.author_name) {
-                    title = `Instagram (@${oembed.author_name})`;
-                }
-            }
-
-            if (!description) {
-                var $a = $container.find(`p a[href*="${urlMatch[1]}"]`);
-                description = $a.text();
-            }
-        }
-
         return {
-            title: title,
-            description: description,
-            canonical: `https://www.instagram.com/p/${urlMatch[1]}`
+            title: ipOG.title,
+            description: ipOG.description,
+            canonical: ipOG.url || `https://www.instagram.com/p/${urlMatch[1]}`
         }
     },
 
@@ -79,16 +48,21 @@ export default {
         var isReel = /\/reel\//i.test(url); // Reels don't work without a caption
 
         if (ipOG.image) {
-            links.push({
+            var og_image = {
                 href: ipOG.image,
                 type: CONFIG.T.image,
-                rel: ipOG.video || isReel ? CONFIG.R.thumbnail : [CONFIG.R.image, CONFIG.R.thumbnail],
+                rel: CONFIG.R.thumbnail
                 // No media - let's validate image as it may be expired.
+            }
 
+            if (oembed.thumbnail_url && !oembed.is_fallback) {
                 // Remove below error when and if it's fixed. Validators will remove the link
-                error: oembed.is_fallback ? null : 'Unfortunatelly Instagram\'s OG image is cropped as of 2023-10-11 and as of 2024-02-02'
-            });
-        }        
+                og_image.error = 'Unfortunatelly Instagram\'s OG image is cropped';
+            } else if (!oembed.thumbnail_url) {
+                // og_image.message = "Unfortunatelly, Instagram removed full images on November 3, 2025"; // images seem to be OK as of Dec 12, 2025
+            }
+            links.push(og_image);
+        }
 
         if (ipOG.video && ipOG.video.width && ipOG.video.height) {
             links.push({
@@ -176,8 +150,8 @@ export default {
         "https://www.instagram.com/p/HbBy-ExIyF/",
         "https://www.instagram.com/p/a_v1-9gTHx/",
         "https://www.instagram.com/p/-111keHybD/",
-        "https://www.instagram.com/reel/CtHaSoDLrWJ/",
         "https://www.instagram.com/nssmagazine/reel/CrVt-Wvs74O/",
+        "https://www.instagram.com/reels/DU_HtZukaC-/",
         {
             skipMixins: ["oembed-title", "fb-error", "oembed-author"],
             skipMethods: ['getData']

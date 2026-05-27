@@ -1,4 +1,4 @@
-import { decodeHTML5 } from 'entities';
+import { decodeHTMLStrict } from 'entities';
 
 export default {
 
@@ -120,11 +120,9 @@ export default {
 
         if ($scope.length) {
 
-            var $aScope = cheerio($scope);
-
             var result = {};
 
-            $aScope.find('[itemprop]').each(function() {
+            $scope.find('[itemprop]').each(function() {
                 var $el = cheerio(this);
 
                 var scope = $el.attr('itemscope');
@@ -134,7 +132,7 @@ export default {
 
                 var key = $el.attr('itemprop');
                 if (key) {
-                    var value = decodeHTML5(decode($el.attr('content') || $el.attr('href')));
+                    var value = decodeHTMLStrict(decode($el.attr('content') || $el.attr('href')));
                     result[key] = value;
                 }
             });
