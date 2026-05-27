@@ -1,10 +1,38 @@
 version: "3"
 services:
-  api:
+  iframely:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: iframely 
+    container_name: iframely
     restart: always
     ports:
       - "8061:8061"
+    environment:
+      IFRAMELY_CACHE_ENGINE: redis
+      IFRAMELY_CACHE_TTL: "86400"
+      IFRAMELY_REDIS_HOST: redis
+      IFRAMELY_REDIS_PORT: "6379"
+      # IFRAMELY_REDIS_PASSWORD: ""
+      # IFRAMELY_REDIS_TLS: "false"
+      # IFRAMELY_REDIS_MODE: standard
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  redis:
+    image: redis:7-alpine
+    container_name: iframely-redis
+    restart: always
+    # ports:
+    #   - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  redis-data:
