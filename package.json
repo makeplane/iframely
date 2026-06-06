@@ -21,6 +21,7 @@
     "license": "MIT",
     "dependencies": {
         "@adobe/fetch": "^4.1.11",
+        "@aws-sdk/client-secrets-manager": "^3.700.0",
         "async": "^3.2.4",
         "cheerio": "^1.1.2",
         "cookie": "^1.0.2",

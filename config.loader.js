@@ -22,6 +22,15 @@ globalConfig = globalConfig && globalConfig.default;
 //     IFRAMELY_REDIS_PASSWORD password (optional)
 //     IFRAMELY_REDIS_TLS      true | false          (enables TLS socket)
 //     IFRAMELY_REDIS_MODE     standard | cluster    (default: standard)
+//
+//   AWS ElastiCache auth via Secrets Manager (used when CACHE_ENGINE=redis).
+//   Handled in lib/cache-engines/redis.js, not here — listed for reference:
+//     ELASTICACHE_SECRET_ARN  Secrets Manager ARN with Redis creds (enables it)
+//     AWS_REGION              region for Secrets Manager       (default: us-east-1)
+//     AWS_SECRET_CACHE_TTL    secret cache + refresh interval, seconds (default: 300)
+//     REDIS_AUTH_TOKEN_KEY    JSON key for auth token          (default: REDIS_AUTH_TOKEN)
+//     REDIS_HOST_KEY          JSON key for host                (default: REDIS_HOST)
+//     REDIS_PORT_KEY          JSON key for port                (default: REDIS_PORT)
 // ---------------------------------------------------------------------------
 
 var envOverrides = {};
