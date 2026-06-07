@@ -31,6 +31,10 @@ globalConfig = globalConfig && globalConfig.default;
 //     REDIS_AUTH_TOKEN_KEY    JSON key for auth token          (default: REDIS_AUTH_TOKEN)
 //     REDIS_HOST_KEY          JSON key for host                (default: REDIS_HOST)
 //     REDIS_PORT_KEY          JSON key for port                (default: REDIS_PORT)
+//
+//   Cluster worker tuning
+//     IFRAMELY_WORKER_MAX_MEMORY_MB       per-worker memory before restart, MB (default: 120)
+//     IFRAMELY_WORKER_RESTART_PERIOD_SEC  periodic worker restart interval, seconds (default: 28800)
 // ---------------------------------------------------------------------------
 
 var envOverrides = {};
@@ -89,6 +93,24 @@ if (effectiveEngine === 'redis' && (
     }
 
     envOverrides.REDIS_OPTIONS = redisOptions;
+}
+
+// --- Cluster worker tuning ---
+// The default per-worker memory cap (config.js CLUSTER_WORKER_RESTART_ON_MEMORY_USED)
+// is 120 MB, which a freshly-booted worker can exceed just loading domains+plugins,
+// causing a restart loop. Allow raising it (and the periodic restart) via env.
+if (process.env.IFRAMELY_WORKER_MAX_MEMORY_MB) {
+    var maxMemMb = parseInt(process.env.IFRAMELY_WORKER_MAX_MEMORY_MB, 10);
+    if (!isNaN(maxMemMb)) {
+        envOverrides.CLUSTER_WORKER_RESTART_ON_MEMORY_USED = maxMemMb * 1024 * 1024;
+    }
+}
+
+if (process.env.IFRAMELY_WORKER_RESTART_PERIOD_SEC) {
+    var restartSec = parseInt(process.env.IFRAMELY_WORKER_RESTART_PERIOD_SEC, 10);
+    if (!isNaN(restartSec)) {
+        envOverrides.CLUSTER_WORKER_RESTART_ON_PERIOD = restartSec * 1000;
+    }
 }
 
 export default {...iframelyConfig, ...globalConfig, ...envOverrides};
