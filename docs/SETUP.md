@@ -57,6 +57,10 @@ In your local config file, define caching parameters:
 
 Valid cache engine values are `no-cache`, `node-cache` (default), `redis` and `memcached`. For Redis and Memcached, the connection options are also required. See sample config file.
 
+### AWS ElastiCache auth (Secrets Manager)
+
+For AWS ElastiCache with an auth token, set `CACHE_ENGINE: 'redis'` and the `ELASTICACHE_SECRET_ARN` environment variable. On startup the Redis auth token (and optionally host/port) is read from AWS Secrets Manager and injected into the Redis connection; a background timer re-fetches the secret every `AWS_SECRET_CACHE_TTL` seconds and rebuilds the client when the token rotates, so no restart is needed. Supported env vars: `ELASTICACHE_SECRET_ARN`, `AWS_REGION` (default `us-east-1`), `AWS_SECRET_CACHE_TTL` (default `300`), and the configurable secret-key names `REDIS_AUTH_TOKEN_KEY` / `REDIS_HOST_KEY` / `REDIS_PORT_KEY`. AWS credentials use the SDK default chain (IRSA / Pod Identity / static keys / IMDS). TLS is controlled by `IFRAMELY_REDIS_TLS` and is not forced on. See the sample config file for details.
+
 
 ## Run Server
 

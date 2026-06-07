@@ -103,6 +103,28 @@ export default {
     */
 
     /*
+    // AWS ElastiCache auth via Secrets Manager (Plane fork extension).
+    //
+    // When CACHE_ENGINE is 'redis' and the ELASTICACHE_SECRET_ARN env var is set,
+    // the Redis auth token (and optionally host/port) is fetched from AWS Secrets
+    // Manager and injected into the connection options above. A background timer
+    // re-fetches the secret and rebuilds the client when the token rotates.
+    //
+    // Configure via environment variables (no config-file changes needed):
+    //
+    //   ELASTICACHE_SECRET_ARN   AWS Secrets Manager ARN with the Redis creds (enables this feature)
+    //   AWS_REGION               region for Secrets Manager           (default: us-east-1)
+    //   AWS_SECRET_CACHE_TTL     secret cache + refresh interval, sec  (default: 300)
+    //   REDIS_AUTH_TOKEN_KEY     JSON key for the auth token           (default: REDIS_AUTH_TOKEN)
+    //   REDIS_HOST_KEY           JSON key for the host                 (default: REDIS_HOST)
+    //   REDIS_PORT_KEY           JSON key for the port                 (default: REDIS_PORT)
+    //
+    // host/port from IFRAMELY_REDIS_HOST/PORT or REDIS_OPTIONS take precedence over
+    // the secret; TLS is controlled by IFRAMELY_REDIS_TLS (not forced on).
+    // AWS credentials use the SDK default chain (IRSA / Pod Identity / keys / IMDS).
+    */
+
+    /*
     // Memcached options. See https://github.com/3rd-Eden/node-memcached#server-locations
     MEMCACHED_OPTIONS: {
         locations: "127.0.0.1:11211"
