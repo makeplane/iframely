@@ -33,6 +33,8 @@ globalConfig = globalConfig && globalConfig.default;
 //     REDIS_PORT_KEY          JSON key for port                (default: REDIS_PORT)
 //
 //   Cluster worker tuning
+//     IFRAMELY_WORKERS_COUNT              number of cluster workers (default: os.cpus().length)
+//                                         alias: IFRAMELY_WORKERS
 //     IFRAMELY_WORKER_MAX_MEMORY_MB       per-worker memory before restart, MB (default: 120)
 //     IFRAMELY_WORKER_RESTART_PERIOD_SEC  periodic worker restart interval, seconds (default: 28800)
 // ---------------------------------------------------------------------------
@@ -110,6 +112,17 @@ if (process.env.IFRAMELY_WORKER_RESTART_PERIOD_SEC) {
     var restartSec = parseInt(process.env.IFRAMELY_WORKER_RESTART_PERIOD_SEC, 10);
     if (!isNaN(restartSec)) {
         envOverrides.CLUSTER_WORKER_RESTART_ON_PERIOD = restartSec * 1000;
+    }
+}
+
+// Number of cluster workers. Without this, graceful-cluster uses os.cpus().length
+// (the HOST node's vCPU count), which on large nodes forks far more workers than
+// the container's CPU/memory can sustain -> OOMKilled. IFRAMELY_WORKERS is
+// accepted as an alias.
+if (process.env.IFRAMELY_WORKERS_COUNT || process.env.IFRAMELY_WORKERS) {
+    var workersCount = parseInt(process.env.IFRAMELY_WORKERS_COUNT || process.env.IFRAMELY_WORKERS, 10);
+    if (!isNaN(workersCount) && workersCount > 0) {
+        envOverrides.CLUSTER_WORKERS_COUNT = workersCount;
     }
 }
 
