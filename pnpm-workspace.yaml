@@ -1,6 +1,8 @@
 overrides:
   '@isaacs/brace-expansion@<=5.0.0': '>=5.0.1'
   body-parser@<1.20.3: '>=1.20.3'
+  brace-expansion@>=1.0.0 <1.1.20: '^1.1.20'
+  brace-expansion@>=2.0.0 <2.1.6: '^2.1.6'
   brace-expansion@>=4.0.0 <5.0.6: '>=5.0.6'
   diff@>=6.0.0 <8.0.3: '>=8.0.3'
   glob@>=10.2.0 <10.5.0: '>=10.5.0'
@@ -12,6 +14,8 @@ overrides:
   serialize-javascript@<7.0.5: '>=7.0.5'
   underscore@<=1.13.7: '>=1.13.8'
   form-data@>=4.0.0 <4.0.6: ">=4.0.6"
-  js-yaml@<=4.1.1: ">=4.2.0"
+  js-yaml@<=4.1.1: ">=5.2.2"
+  proxy-addr@<2.0.8: "^2.0.8"
+  undici@>=7.0.0 <7.29.1: "^7.29.1"
 patchedDependencies:
   readabilitySAX@1.6.1: patches/readabilitySAX@1.6.1.patch

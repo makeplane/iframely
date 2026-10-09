@@ -19,6 +19,9 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml /iframely/
 COPY patches/ /iframely/patches/
 RUN pnpm install --frozen-lockfile --prod
 
+# The base image's global npm is unused at runtime and its bundled deps carry CVEs.
+RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
+
 COPY . /iframely
 
 RUN chown -R iframely /iframely/config.local.js || touch /iframely/config.local.js
