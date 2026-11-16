@@ -6,7 +6,16 @@ WORKDIR /iframely
 
 # Create new non-root user
 RUN addgroup --system iframelygroup && adduser --system iframely -G iframelygroup
-RUN apk add g++ make python3
+
+# Pull in Alpine security fixes published after the node:22-alpine base was
+# cut (e.g. libexpat, which python3 brings in), then install the build
+# toolchain at that same patch level. Bump the date to force this layer to
+# rebuild: the build cache keys it on the command, so an unchanged date can
+# silently re-ship old packages from cache.
+ARG APK_SECURITY_PATCH=2026-11-16
+RUN echo "APK_SECURITY_PATCH=${APK_SECURITY_PATCH}" \
+    && apk upgrade --no-cache --available \
+    && apk add --no-cache g++ make python3
 
 # This will change the config to `config.<VALUE>.js` and the express server to change its behaviour.
 # You should overwrite this on the CLI with `-e NODE_ENV=production`.
